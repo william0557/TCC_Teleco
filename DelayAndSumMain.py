@@ -25,7 +25,7 @@ fft_shift = 256
 
 out_fftSpectrum, _ = util.get_3dim_spectrum_from_data(input_arrays, fft_window, fft_shift, fft_window)
 
-ds_beamformer = ds.delaysum(input_SoundAngles, mic_diameter, sampling_frequency=sampling_freq, fft_length=FFT_LENGTH, fft_shift=FFT_SHIFT)
+ds_beamformer = ds.delayandsum(input_SoundAngles, mic_diameter, sampling_frequency=sampling_freq, fft_length=FFT_LENGTH, fft_shift=FFT_SHIFT)
 
 beamformer = ds_beamformer.get_sterring_vector(desired_direction)
 
