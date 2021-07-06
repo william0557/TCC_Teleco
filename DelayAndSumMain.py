@@ -7,8 +7,8 @@ input_SoundAngles = np.array([0, 60, 120, 180, 270, 330])
 desired_direction = 0
 mic_radius = 0.0922
 mic_diameter = 2*mic_radius
-fft_window = 512
-fft_shift = 256
+fft_window = 1024
+fft_shift = 512
 sampling_freq = 16000
 
 def input_read(prefix=r'./sample_data/20G_20GO010I_STR.CH{}.wav',
