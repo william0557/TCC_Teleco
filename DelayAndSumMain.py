@@ -1,27 +1,26 @@
-import numpy as np
 import soundfile as sf
-from beamformer import delayandsum as ds
+import numpy as np
 from beamformer import util
+from beamformer import delayandsum as ds
 
-sampling_freq = 16000
-out_path = './output/delaysum_out.wav'
 input_SoundAngles = np.array([0, 60, 120, 180, 270, 330])
 desired_direction = 0
 mic_radius = 0.0922
 mic_diameter = 2*mic_radius
 fft_window = 512
 fft_shift = 256
+sampling_freq = 16000
 
-# def multi_channel_read(prefix=r'./sample_data/20G_20GO010I_STR.CH{}.wav',
-#                        channel_index_vector=np.array([1, 2, 3, 4, 5, 6])):
-#     wav, _ = sf.read(prefix.replace('{}', str(channel_index_vector[0])), dtype='float32')
-#     wav_multi = np.zeros((len(wav), len(channel_index_vector)), dtype=np.float32)
-#     wav_multi[:, 0] = wav
-#     for i in range(1, len(channel_index_vector)):
-#         wav_multi[:, i] = sf.read(prefix.replace('{}', str(channel_index_vector[i])), dtype='float32')[0]
-#     return wav_multi
+def input_read(prefix=r'./sample_data/20G_20GO010I_STR.CH{}.wav',
+    channel_index=np.array([1, 2, 3, 4, 5, 6])):
+    wav, _ = sf.read(prefix.replace('{}', str(channel_index[0])), dtype='float32')
+    channels_wav = np.zeros((len(wav), len(channel_index)), dtype=np.float32)
+    channels_wav[:, 0] = wav
+    for i in range(1, len(channel_index)):
+        channels_wav[:, i] = sf.read(prefix.replace('{}', str(channel_index[i])), dtype='float32')[0]
+    return channels_wav
 
-#input_arrays = multi_channel_read()  #####################################COLOCAR OS ARRAYS DE ENTRADA AQUI!!!#
+input_arrays = input_read()
 
 out_fftSpectrum, _ = util.get_3dim_spectrum_from_data(input_arrays, fft_window, fft_shift, fft_window)
 
@@ -29,6 +28,7 @@ ds_beamformer = ds.delayandsum(input_SoundAngles, mic_diameter, sampling_frequen
 
 beamformer = ds_beamformer.get_sterring_vector(desired_direction)
 
-enhanced_speech = ds_beamformer.apply_beamformer(beamformer, out_fftSpectrum)
+out_sound = ds_beamformer.apply_beamformer(beamformer, out_fftSpectrum)
 
-sf.write(out_path, enhanced_speech / np.max(np.abs(enhanced_speech)) * 0.65, sampling_freq)
+out_path = './output/delaysum_out'+str(desired_direction)+'.wav'
+sf.write(out_path, out_sound / np.max(np.abs(out_sound)) * 0.65, sampling_freq)
