@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 26 10:09:47 2018
-
-@author: a-kojima
-
-"""
 import numpy as np
 import soundfile as sf
 from scipy.fftpack import fft, ifft
