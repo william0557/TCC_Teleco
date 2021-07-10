@@ -2,8 +2,10 @@ import soundfile as sf
 import numpy as np
 from beamformer import util
 from beamformer import delayandsum as ds
+import matplotlib.pyplot as pl
+
 input_SoundAngles = np.array([0, 60, 120, 180, 270, 330])
-desired_direction = 270
+desired_direction = 120
 mic_radius = 0.0922
 mic_diameter = 2*mic_radius
 fft_window = 1024
@@ -23,11 +25,14 @@ input_arrays = input_read()
 
 out_fftSpectrum, _ = util.get_3dim_spectrum_from_data(input_arrays, fft_window, fft_shift, fft_window)
 
-ds_beamformer = ds.delayandsum(input_SoundAngles, mic_diameter, sampling_frequency=sampling_freq, fft_length=fft_window, fft_shift=fft_shift)
+ds_beamformer = ds.delayandsum(input_SoundAngles, mic_diameter, sampling_frequency=sampling_freq, fft_window=fft_window, fft_shift=fft_shift)
 
-beamformer = ds_beamformer.get_sterring_vector(desired_direction)
+beamformer = ds_beamformer.get_vetor_direcao(desired_direction)
 
-out_sound = ds_beamformer.apply_beamformer(beamformer, out_fftSpectrum)
+out_sound = ds_beamformer.aplica_beamformer(beamformer, out_fftSpectrum)
 
 out_path = './output/delaysum_out'+str(desired_direction)+'.wav'
 sf.write(out_path, out_sound / np.max(np.abs(out_sound)) * 0.65, sampling_freq)
+
+pl.figure()
+pl.plot(out_sound)
