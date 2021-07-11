@@ -12,9 +12,9 @@ class delayandsum:
         self.sampling_frequency=sampling_frequency
 
     def normaliza(self, vetor_direcao):        
-        for ii in range(0, self.fft_window):            
-            weight = np.matmul(np.conjugate(vetor_direcao[:, ii]).T, vetor_direcao[:, ii])
-            vetor_direcao[:, ii] = (vetor_direcao[:, ii] / weight) 
+        for i in range(0, self.fft_window):            
+            weight = np.matmul(np.conjugate(vetor_direcao[:, i]).T, vetor_direcao[:, i])
+            vetor_direcao[:, i] = (vetor_direcao[:, i] / weight) 
         return vetor_direcao        
     
     def get_vetor_direcao(self, direcao_desejada):
