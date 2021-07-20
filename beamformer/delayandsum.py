@@ -1,9 +1,10 @@
-from . import util
+# -*- coding: utf-8 -*-
 import numpy as np
+from . import util
 
 class delayandsum:
     
-    def __init__(self, mic_angle_vector,mic_diameter,sound_speed=343,sampling_frequency=16000,fft_window=1024,fft_shift=512):
+    def __init__(self, mic_angle_vector,mic_diameter,sound_speed=343,sampling_frequency=41000,fft_window=1024,fft_shift=512):
         self.fft_window=fft_window
         self.fft_shift=fft_shift
         self.mic_angle_vector=mic_angle_vector
@@ -34,4 +35,4 @@ class delayandsum:
         espectro_melhorado = np.zeros((number_of_frames, number_of_bins), dtype=np.complex64)
         for f in range(0, number_of_bins):
             espectro_melhorado[:, f] = np.matmul(np.conjugate(beamformer[:, f]).T, spectrum[:, :, f])
-        return util.spec2wav(espectro_melhorado, self.sampling_frequency, self.fft_window, self.fft_window, self.fft_shift)       
+        return util.spec2wav(espectro_melhorado, self.sampling_frequency, self.fft_window, self.fft_window, self.fft_shift)

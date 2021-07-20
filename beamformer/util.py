@@ -1,9 +1,8 @@
 import numpy as np
 import soundfile as sf
-from scipy.fftpack import fft, ifft
 import numpy.matlib as npm
 from scipy import signal as sg
-
+from scipy.fftpack import fft, ifft
 
 def stab(mat, theta, num_channels):
     d = np.power(np.array(10, dtype=np.complex64) , np.arange( - num_channels, 0, dtype=np.float))
@@ -41,46 +40,45 @@ def get_3dim_spectrum(wav_name, channel_vec, start_point, stop_point, frame, shi
         ed = ed + shift
     return spectrums, len(samples)
 
-def get_3dim_spectrum_from_data(wav_data, frame, shift, fftl):
-    """
-    dump_wav : channel_size * speech_size (2dim)
-    """
+def get_3dim_spectrum_from_data(wav_data, frame, shift, fft_window):
+    
     len_sample, len_channel_vec = np.shape(wav_data)            
     dump_wav = wav_data.T
     dump_wav = dump_wav / np.max(np.abs(dump_wav)) * 0.7
-    window = sg.hanning(fftl + 1, 'periodic')[: - 1]
+    window = sg.hanning(fft_window + 1, 'periodic')[: - 1]
     multi_window = npm.repmat(window, len_channel_vec, 1)    
     st = 0
     ed = frame
     number_of_frame = np.int((len_sample - frame) /  shift)
-    spectrums = np.zeros((len_channel_vec, number_of_frame, np.int(fftl / 2) + 1), dtype=np.complex64)
-    for ii in range(0, number_of_frame):       
-        multi_signal_spectrum = fft(dump_wav[:, st:ed], n=fftl, axis=1)[:, 0:np.int(fftl / 2) + 1] # channel * number_of_bin        
-        spectrums[:, ii, :] = multi_signal_spectrum
-        st = st + shift
+    spectrums = np.zeros((len_channel_vec, number_of_frame, np.int(fft_window / 2) + 1), dtype=np.complex64)
+    for i in range(0, number_of_frame):       
+        multi_signal_spectrum = fft(dump_wav[:, st:ed], n=fft_window, axis=1)[:, 0:np.int(fft_window / 2) + 1] # channel * number_of_bin        
+        spectrums[:, i, :] = multi_signal_spectrum
         ed = ed + shift
+        st = st + shift
+        
     return spectrums, len_sample
 
 def my_det(matrix_):
     sign, lodget = np.linalg.slogdet(matrix_)
     return np.exp(lodget)
 
-def spec2wav(spectrogram, sampling_frequency, fftl, frame_len, shift_len):
+def spec2wav(spectrogram, sampling_frequency, fft_window, frame_len, fft_shift):
     n_of_frame, fft_half = np.shape(spectrogram)    
-    hanning = sg.hanning(fftl + 1, 'periodic')[: - 1]    
-    cut_data = np.zeros(fftl, dtype=np.complex64)
-    result = np.zeros(sampling_frequency * 60 * 5, dtype=np.float32)
+    hanning = sg.hanning(fft_window + 1, 'periodic')[: - 1]    
+    cut_data = np.zeros(fft_window, dtype=np.complex64)
+    result = np.zeros(300*sampling_frequency, dtype=np.float32)
     start_point = 0
     end_point = start_point + frame_len
     for ii in range(0, n_of_frame):
         half_spec = spectrogram[ii, :]        
-        cut_data[0:np.int(fftl / 2) + 1] = half_spec.T   
-        cut_data[np.int(fftl / 2) + 1:] =  np.flip(np.conjugate(half_spec[1:np.int(fftl / 2)]), axis=0)
-        cut_data2 = np.real(ifft(cut_data, n=fftl))        
+        cut_data[0:np.int(fft_window / 2) + 1] = half_spec.T   
+        cut_data[np.int(fft_window / 2) + 1:] =  np.flip(np.conjugate(half_spec[1:np.int(fft_window / 2)]), axis=0)
+        cut_data2 = np.real(ifft(cut_data, n=fft_window))        
         result[start_point:end_point] = result[start_point:end_point] + np.real(cut_data2 * hanning.T) 
-        start_point = start_point + shift_len
-        end_point = end_point + shift_len
-    return result[0:end_point - shift_len]
+        start_point = start_point + fft_shift
+        end_point = end_point + fft_shift
+    return result[0:end_point - fft_shift]
 
 def multispec2wav(multi_spectrogram, beamformer, fftl, shift, multi_window, true_dur):
     channel, number_of_frame, fft_size = np.shape(multi_spectrogram)
