@@ -4,13 +4,15 @@ from beamformer import util
 from beamformer import delayandsum as ds
 import matplotlib.pyplot as pl
 
-input_SoundAngles = np.array([0, 60, 120, 180, 270, 330])
-desired_direction = 120
-mic_radius = 0.0922
+
+input_SoundAngles = np.array([300, 240, 180, 120, 60, 0])
+desired_direction = 300
+mic_radius = 0.0461
 mic_diameter = 2*mic_radius
 fft_window = 1024
 fft_shift = 512
-sampling_freq = 16000
+sampling_freq = 44100
+
 
 def input_read(input_path=r'./inputs/Mic{N}_440Hz.wav',channel_index=np.array([1, 2, 3, 4, 5, 6])):
     Input_WaveNames = input_path.replace('{N}', str(channel_index[0]))
