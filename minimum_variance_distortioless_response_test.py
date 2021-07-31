@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 15 17:49:51 2019
-
-@author: a-kojima
-"""
 import numpy as np
 import soundfile as sf
 from beamformer import util
