@@ -1,4 +1,4 @@
 # Beamforming-for-speech-enhancement
-- simple delaysum, MVDR and CGMM-MVDR
-- Please run *_test.py, and youw will get enhancement speech in /output directory
+- Algoritmos delaysum e MVDR para melhoria de sinais de áudio.
+- O sinal utilizado para testes (voz + ruído) também está disponível nessa pasta
 
