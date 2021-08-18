@@ -20,7 +20,7 @@ def aquisicao_sinais(input_path=r'./sample_data/mic{}.wav', indice_vetor=np.arra
         for i in range(1, len(indice_vetor)):
             ondas_sonoras[:, i] = sf.read(input_path.replace('{}', str(indice_vetor[i])), dtype='float32')[0]
         return ondas_sonoras
-
+# testa para cara direção
 for i in Angulos_microfones:
     direcao_desejada = i
     out_path = './output/Direção_'+str(i)+'2000x800Hz_mvdr.wav'
@@ -33,7 +33,7 @@ for i in Angulos_microfones:
 
     ondas_sonoras = aquisicao_sinais()
 
-    Correlacao_espacial = mvdr_beamformer.Matriz_CorrelacaoEspacial(ondas_sonoras)
+    Correlacao_espacial = mvdr_beamformer.Matriz_CorrelacaoEspacial(ondas_sonoras, 10, 10)
     bf = mvdr_beamformer.MVDR_BF(regula_fases, Correlacao_espacial)
     espectro, _ = funcoes.espectro_3D(ondas_sonoras, fft_window, fft_shift, fft_window)
 
