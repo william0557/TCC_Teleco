@@ -1,4 +1,6 @@
-# Beamforming-for-speech-enhancement
-- Algoritmos delaysum e MVDR para melhoria de sinais de áudio.
-- O sinal utilizado para testes (voz + ruído) está disponível na pasta sample_data
+# Algoritmos de seleção sonora - Trabalho de conclusão de curso
+- Delay and sum
+- MVDR
 
+A pasta Classe MVDR possui os algoritmos aplicados nos testes fora da pasta.
+As amostras de entrada estão na pasta Sampling Data.
